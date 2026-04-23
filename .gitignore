@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -205,3 +206,36 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+=======
+# Virtual envs
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Editor/OS
+.DS_Store
+.idea/
+.vscode/       # or keep this if you want to share settings
+*.swp
+
+# Env vars / secrets
+.env
+.env.local
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ML stuff you'll probably want
+wandb/
+*.pt
+*.pth
+*.ckpt
+data/          # if data is large / not meant to be versioned
+>>>>>>> b40fd36 (chore: lazy preparation of repo for rebasing)
