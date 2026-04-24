@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from torchvision.transforms import v2
 
-latent_dims=512
+latent_dims=128
 
 class Encoder(nn.Module):
     def __init__(self) -> None:

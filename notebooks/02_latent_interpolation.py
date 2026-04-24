@@ -8,9 +8,9 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: CVAE (3.12)
+#     display_name: Python 3 (ipykernel)
 #     language: python
-#     name: cvae
+#     name: python3
 # ---
 
 # %%
@@ -26,14 +26,17 @@ from MNIST.data.parser import transform, output_to_image
 from MNIST.models.ae import AutoEncoder, latent_dims
 
 # %%
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+# %%
 interpolation_length = 10
 
 # %%
 # Initialise networks
-autoencoder = AutoEncoder()
-autoencoder.load_state_dict(torch.load('../models/autoencoder_v1/checkpoint_epoch_20.pt', map_location='cpu'))
-encoder = autoencoder.encoder
-decoder = autoencoder.decoder
+autoencoder = AutoEncoder().to(device)
+autoencoder.load_state_dict(torch.load('../models/autoencoder_v2/checkpoint_epoch_50.pt', map_location='cuda'))
+encoder = autoencoder.encoder.to(device)
+decoder = autoencoder.decoder.to(device)
 
 # %%
 # Download mnist data
