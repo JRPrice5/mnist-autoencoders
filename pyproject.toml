@@ -1,5 +1,5 @@
 [project]
-name = "cvae"
+name = "mnist-autoencoders"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

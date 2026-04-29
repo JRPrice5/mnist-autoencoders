@@ -8,9 +8,9 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: Python 3 (ipykernel)
+#     display_name: mnist-autoencoders
 #     language: python
-#     name: python3
+#     name: mnist-autoencoders
 # ---
 
 # %%
@@ -24,14 +24,15 @@ from PIL import Image, ImageShow
 
 # %%
 # Import autoencoder utility tools
-from mnist_autoencoders.data.parser import train_loader, test_loader, output_to_image
-from mnist_autoencoders.models.ae import AutoEncoder
+from mnist_autoencoders.data.utils import train_loader, test_loader, output_to_image
+from mnist_autoencoders.models.AutoEncoder import AutoEncoder
 
 # %%
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # %%
 n_epochs = 50 
+latent_dims = 128
 lr = 0.001
 momentum = 0.9
 
@@ -45,7 +46,7 @@ test_batches = len(test_loader)
 
 # %%
 # Now i need to define the model and an optimiser
-autoencoder = AutoEncoder().to(device)
+autoencoder = AutoEncoder(latent_dims).to(device)
 optimiser = torch.optim.SGD(autoencoder.parameters(), lr=lr, momentum=momentum)
 criterion = nn.MSELoss()
 

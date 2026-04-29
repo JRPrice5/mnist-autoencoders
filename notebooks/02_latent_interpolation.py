@@ -8,9 +8,9 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: Python 3 (ipykernel)
+#     display_name: mnist-autoencoders
 #     language: python
-#     name: python3
+#     name: mnist-autoencoders
 # ---
 
 # %%
@@ -22,19 +22,20 @@ from PIL import Image, ImageShow
 
 # %%
 # Import autoencoder utility tools
-from MNIST.data.parser import transform, output_to_image
-from MNIST.models.ae import AutoEncoder, latent_dims
+from mnist_autoencoders.data.utils import transform, output_to_image
+from mnist_autoencoders.models.AutoEncoder import AutoEncoder
 
 # %%
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # %%
 interpolation_length = 10
+latent_dims=128
 
 # %%
 # Initialise networks
-autoencoder = AutoEncoder().to(device)
-autoencoder.load_state_dict(torch.load('../models/autoencoder_v2/checkpoint_epoch_50.pt', map_location='cuda'))
+autoencoder = AutoEncoder(latent_dims).to(device)
+autoencoder.load_state_dict(torch.load('../models/autoencoder_v2/checkpoint_epoch_50.pt', map_location=device))
 encoder = autoencoder.encoder.to(device)
 decoder = autoencoder.decoder.to(device)
 
