@@ -1,6 +1,4 @@
-import torch
 import torch.nn as nn
-from torchvision.transforms import v2
 
 class Decoder(nn.Module):
     def __init__(self, cfg) -> None:

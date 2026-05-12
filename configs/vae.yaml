@@ -1,6 +1,6 @@
 run_name: 'vae'
 model:
-  latent_dim: 2
+  latent_dim: 20 
   conv1:
     channels: 4
     kernel_size: 3
@@ -16,7 +16,7 @@ model:
 training:
   seed: 42
   beta: 0.1
-  epochs: 100
+  epochs: 50
   batch_size: 64
   lr: 0.001
   momentum: 0.9

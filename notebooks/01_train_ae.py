@@ -8,12 +8,13 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: mnist-autoencoders
+#     display_name: Python 3 (ipykernel)
 #     language: python
-#     name: mnist-autoencoders
+#     name: python3
 # ---
 
 # %%
+from omegaconf import OmegaConf
 import math
 import torch
 import torch.nn as nn
@@ -28,7 +29,11 @@ from mnist_autoencoders.data.utils import train_loader, test_loader, output_to_i
 from mnist_autoencoders.models.AutoEncoder import AutoEncoder
 
 # %%
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+# device = 'cuda' if torch.cuda.is_available() else 'cpu'
+device = 'cuda'
+
+# %%
+cfg = OmegaConf.load("../configs/vae.yaml")
 
 # %%
 n_epochs = 50 
@@ -46,7 +51,7 @@ test_batches = len(test_loader)
 
 # %%
 # Now i need to define the model and an optimiser
-autoencoder = AutoEncoder(latent_dims).to(device)
+autoencoder = AutoEncoder(cfg).to(device)
 optimiser = torch.optim.SGD(autoencoder.parameters(), lr=lr, momentum=momentum)
 criterion = nn.MSELoss()
 
@@ -100,4 +105,8 @@ ax.set(xlabel='Batch', ylabel='MSE Loss')
 ax.grid()
 
 # %%
-torch.save(autoencoder.state_dict(), '../models/autoencoder_128/checkpoint_epoch_50.pt')
+torch.save(autoencoder.state_dict(), '../models/autoencoder_v2/checkpoint_epoch_50.pt')
+
+# %%
+import os
+print(os.getcwd())

@@ -15,57 +15,48 @@
 
 # %%
 from rich.traceback import install
-from tqdm import tqdm
 from omegaconf import OmegaConf
 import wandb
 import torch
-import torch.nn as nn
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image, ImageShow 
+from PIL import Image
 
 # %%
 # Import autoencoder utility tools
 from mnist_autoencoders.data.utils import train_loader, test_loader, output_to_image
 from mnist_autoencoders.models.VAE import VAE
+from mnist_autoencoders.utils import vae_inference_utils
 
 # %%
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+# device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cuda"
 
 # %%
 install(show_locals=True)
-cfg = OmegaConf.load('../configs/vae.yaml')
-wandb.init(project="mnist-autoencoders", name=cfg.run_name,
-           config=OmegaConf.to_container(cfg, resolve=True))
+cfg = OmegaConf.load("../configs/vae.yaml")
+wandb.init(
+    project="mnist-autoencoders",
+    name=cfg.run_name,
+    config=OmegaConf.to_container(cfg, resolve=True),
+)
 vae = VAE(cfg).to(device)
 
 # %%
 # Now i need to define the model and an optimiser
-optimiser = torch.optim.Adam(vae.parameters(), lr=cfg.training.lr, momentum=cfg.training.momentum)
+optimiser = torch.optim.Adam(
+    vae.parameters(), lr=cfg.training.lr, betas=(0.9, 0.999), eps=1e-8
+)
 
 # %%
 # Now i need to define the training loop and, inside, the loss function
+vae_inference_utils = vae_inference_utils(vae, cfg, device, wandb, optimiser=optimiser)
 for epoch in range(cfg.training.epochs):
-    pbar = tqdm(train_loader, desc=f'epoch: {epoch}')
-    losses = 0
-    for x_train, _ in pbar:
-        optimiser.zero_grad()
-        x = x_train.to(device)
-        x_hat = vae(x)
-        loss = vae.calculate_loss(x_hat, x)
-        loss.backward()
-        losses += loss.item()
-        optimiser.step()
-    wandb.log({"train/loss": losses/len(train_loader)}, step=epoch)
+    vae_inference_utils.train_test_loop(
+        mode="train", epoch=epoch, data_loader=train_loader
+    )
     with torch.inference_mode():
-        testpbar = tqdm(test_loader, leave=False)
-        losses = 0
-        for x_test, _ in testpbar:
-            x = x_test.to(device)
-            x_hat = vae(x)
-            loss = vae.calculate_loss(x_hat, x)
-            losses += loss.item()
-        wandb.log({"test/loss": losses/len(test_loader)}, step=epoch)
+        vae_inference_utils.train_test_loop(
+            mode="test", epoch=epoch, data_loader=test_loader
+        )
 wandb.finish()
 
 # %% [markdown]
@@ -76,7 +67,7 @@ wandb.finish()
 # denormalising the result and rendering it with pillow
 data = next(iter(train_loader))[0][1].to(device)
 
-output = vae(torch.reshape(data, (1,1,28,28)))[0][0]
+output = vae(torch.reshape(data, (1, 1, 28, 28)))[0][0]
 restored_output = output_to_image(output)
 img_hat = Image.fromarray(restored_output.cpu().detach().numpy())
 
@@ -90,4 +81,4 @@ img
 img_hat
 
 # %%
-# torch.save(vae.state_dict(), '../models/VAE_128/checkpoint_epoch_10.pt')
+torch.save(vae.state_dict(), "../models/vae_v1/checkpoint_epoch_50.pt")
