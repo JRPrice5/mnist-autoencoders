@@ -1,0 +1,11 @@
+{
+  "experiment": ,
+  "completed_at": ,
+  "epochs_completed": ,
+  "best_val_loss": ,
+  "best_val_loss_epoch": ,
+  "final_train_loss": ,
+  "final_val_loss": ,
+  "wall_clock_seconds":,
+  "peak_gpu_memory_gb":
+}
