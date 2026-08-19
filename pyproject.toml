@@ -1,7 +1,7 @@
 [project]
 name = "mnist-autoencoders"
 version = "0.1.0"
-description = "Add your description here"
+description = "AE and VAE experiments on MNIST for learning latent representations."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
